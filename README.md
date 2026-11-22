@@ -1,6 +1,6 @@
 <p align="center">
     <picture>
-      <img width="256" height="256" alt="M-removebg-preview" src="https://github.com/user-attachments/assets/1cc7cc5e-978d-4b90-bc40-94dce82c8996" />
+<img width="1920" height="1080" alt="M" src="https://github.com/user-attachments/assets/a3728533-bc95-4fe1-80c6-9e2330c56c03" />
     </picture>
   
 # MotionSFX Alpha v0.9.9.0
