@@ -1,3 +1,8 @@
+<p align="center">
+    <picture>
+      <img width="256" height="256" alt="M-removebg-preview" src="https://github.com/user-attachments/assets/1cc7cc5e-978d-4b90-bc40-94dce82c8996" />
+    </picture>
+  
 # MotionSFX Alpha v0.9.9.0
 MotionSFX is a C# Vibecoded project that translates SlimeVR FBT movement into a native Windows keybind set.
 This program requires the .NET 10 SDK for Windows and currently does not support Linux.
