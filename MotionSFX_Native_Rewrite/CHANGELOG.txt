@@ -1,0 +1,26 @@
+MotionSFX Alpha 0.9.9.0
+=======================
+
+FULL NATIVE REWRITE
+- Replaced the PowerShell runtime and 82 KB PowerShell application script
+  with a C# WPF application.
+- Removed the PowerShell launcher, child process, PowerShell host, Add-Type
+  compilation, and PowerShell keyboard module from the runtime path.
+- Moved configuration, persistence, UI event handling, tracker state,
+  movement recognition, logging and keyboard injection into native C#.
+- Retained the C# VMC/OSC receiver as a dedicated, below-normal-priority
+  background worker.
+
+PERFORMANCE
+- Bounded motion queue at 8,192 samples.
+- Per-transform motion sample throttling at about 30 Hz.
+- UI poll at 50 ms; status refresh at 250 ms; data tables at 1 second only
+  while visible.
+- Motion backlog capped to the newest 150 samples per UI tick.
+- Cached SteamVR process detection (10-second interval).
+- Bounded log buffer.
+
+DEPLOYMENT
+- .NET 10 LTS WPF application.
+- Self-contained single-file win-x64 publish output.
+- No PowerShell scripts or PowerShell runtime required.
