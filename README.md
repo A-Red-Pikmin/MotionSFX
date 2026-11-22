@@ -1,6 +1,6 @@
 <p align="center">
     <picture>
-<img width="1" height="440" alt="M" src="https://github.com/user-attachments/assets/a3728533-bc95-4fe1-80c6-9e2330c56c03" />
+<img width="1280" height="440" alt="M" src="https://github.com/user-attachments/assets/a3728533-bc95-4fe1-80c6-9e2330c56c03" />
     </picture>
   
 # MotionSFX Alpha v0.9.9.0
