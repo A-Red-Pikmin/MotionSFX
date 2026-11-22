@@ -1,4 +1,4 @@
-# MotionSFX Alpha 0.9.9.0 — Native C# Rewrite
+# MotionSFX Alpha 0.9.9.0
 
 MotionSFX is a native C# Windows desktop application. It does not use PowerShell, a browser, an embedded browser, a localhost web server, or an HTTP listener at runtime. The interface is WPF and the app runs as one `MotionSFX.exe` process.
 
