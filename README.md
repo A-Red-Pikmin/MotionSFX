@@ -1,3 +1,4 @@
+<img width="256" height="256" alt="M-removebg-preview" src="https://github.com/user-attachments/assets/4034ab77-c142-4c00-b5da-9ea291079202" />
 # MotionSFX Alpha v0.9.9.0
 
 MotionSFX is a native C# Windows desktop application. It does not use PowerShell, a browser, an embedded browser, a localhost web server, or an HTTP listener at runtime. The interface is WPF and the app runs as one `MotionSFX.exe` process.
