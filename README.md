@@ -1,4 +1,4 @@
-# MotionSFX Alpha 0.9.9.0
+# MotionSFX Alpha v0.9.9.0
 
 MotionSFX is a native C# Windows desktop application. It does not use PowerShell, a browser, an embedded browser, a localhost web server, or an HTTP listener at runtime. The interface is WPF and the app runs as one `MotionSFX.exe` process.
 
@@ -53,3 +53,5 @@ Logs are written to:
 `%APPDATA%\MotionSFX\motionsfx.log`
 
 If the receiver reports no traffic, verify SlimeVR's destination IP and Port Out. A VMC identity count is not a physical IMU count: SlimeVR's VMC output contains computed tracker transforms, not a physical sensor inventory.
+
+## Note: All code is vibecoded.
