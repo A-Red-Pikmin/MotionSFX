@@ -1,0 +1,115 @@
+name: Build Windows Update Package
+
+"on":
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Tag of the existing DRAFT release (example: v0.9.10.3)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: motionsfx-runtime-\${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-attach-runtime:
+    runs-on: windows-latest
+
+    steps:
+      - name: Validate release tag and draft state
+        env:
+          GH_TOKEN: \${{ github.token }}
+          RELEASE_TAG: \${{ inputs.release_tag }}
+          GH_REPO: \${{ github.repository }}
+        shell: pwsh
+        run: |
+          if ($env:RELEASE_TAG -notmatch '^v?\d+\.\d+\.\d+\.\d+$') {
+            throw "Release tag must be a four-part version, for example v0.9.10.3."
+          }
+          $draftState = gh release view $env:RELEASE_TAG --repo $env:GH_REPO --json isDraft --jq .isDraft
+          if ($LASTEXITCODE -ne 0) { throw "The release tag '$env:RELEASE_TAG' does not have a GitHub Release yet. Create and save it as a draft first." }
+          if ($draftState.Trim() -ne "true") { throw "The release must remain a DRAFT until its runtime package has been built and attached." }
+          $version = $env:RELEASE_TAG.Trim()
+          if ($version.StartsWith('v', [System.StringComparison]::OrdinalIgnoreCase)) { $version = $version.Substring(1) }
+          "MOTIONSFX_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "Preparing Windows runtime for MotionSFX $version"
+
+      - name: Check out the release tag
+        uses: actions/checkout@v4
+        with:
+          ref: \${{ inputs.release_tag }}
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Extract and validate source package
+        shell: pwsh
+        run: |
+          $sourceZipName = "MotionSFX_v{0}_SOURCE.zip" -f $env:MOTIONSFX_VERSION
+          $sourceZip = Join-Path $env:GITHUB_WORKSPACE $sourceZipName
+          if (-not (Test-Path $sourceZip)) { throw "Source ZIP not found: $sourceZip" }
+          $sourceRoot = Join-Path $env:RUNNER_TEMP "MotionSFXSource"
+          Expand-Archive -LiteralPath $sourceZip -DestinationPath $sourceRoot -Force
+          $matches = @()
+          Get-ChildItem -Path $sourceRoot -Filter "MotionSFX.csproj" -File -Recurse | ForEach-Object {
+            try {
+              [xml]$projectXml = Get-Content $_.FullName -Raw
+              $versionNode = $projectXml.SelectSingleNode('/Project/PropertyGroup/Version')
+              if ($versionNode -and $versionNode.InnerText.Trim() -eq $env:MOTIONSFX_VERSION) { $matches += $_ }
+            } catch { Write-Host "Skipping invalid project file: $($_.FullName)" }
+          }
+          if ($matches.Count -ne 1) { throw "Expected exactly one MotionSFX.csproj with Version=$env:MOTIONSFX_VERSION; found $($matches.Count)." }
+          $projectDirectory = $matches[0].DirectoryName
+          if (-not (Test-Path (Join-Path $projectDirectory "Updater\MotionSFX.Updater.csproj"))) { throw "The native updater project is missing." }
+          if (-not (Test-Path (Join-Path $projectDirectory "Assets\MotionSFX-logo.png"))) { throw "The supplied MotionSFX logo is missing." }
+          "MOTIONSFX_PROJECT_DIR=$projectDirectory" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "Validated source project: $projectDirectory"
+
+      - name: Publish MotionSFX x64 runtime
+        shell: pwsh
+        run: |
+          $publish = Join-Path $env:RUNNER_TEMP "MotionSFXPublish"
+          dotnet publish (Join-Path $env:MOTIONSFX_PROJECT_DIR "MotionSFX.csproj") -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o $publish
+          if ($LASTEXITCODE -ne 0) { throw "MotionSFX publish failed." }
+
+          $updaterOutput = Join-Path $env:RUNNER_TEMP "MotionSFXUpdaterPublish"
+          dotnet publish (Join-Path $env:MOTIONSFX_PROJECT_DIR "Updater\MotionSFX.Updater.csproj") -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o $updaterOutput
+          if ($LASTEXITCODE -ne 0) { throw "Native update helper publish failed." }
+
+          Copy-Item (Join-Path $updaterOutput "MotionSFX.Updater.exe") (Join-Path $publish "MotionSFX.Updater.exe") -Force
+          @{ version = $env:MOTIONSFX_VERSION; runtime = "win-x64" } |
+            ConvertTo-Json -Compress |
+            Set-Content -Path (Join-Path $publish "app-version.json") -Encoding utf8
+
+          foreach ($required in @("MotionSFX.exe", "MotionSFX.Updater.exe", "app-version.json", "Assets\MotionSFX-logo.png", "Assets\MotionSFX-icon.ico")) {
+            if (-not (Test-Path (Join-Path $publish $required))) { throw "Required runtime file missing: $required" }
+          }
+          $package = Join-Path $env:RUNNER_TEMP "MotionSFX-win-x64.zip"
+          if (Test-Path $package) { Remove-Item $package -Force }
+          Compress-Archive -Path (Join-Path $publish "*") -DestinationPath $package -CompressionLevel Optimal
+          $archive = [System.IO.Compression.ZipFile]::OpenRead($package)
+          try {
+            $names = @($archive.Entries | ForEach-Object { $_.FullName.Replace('\','/') })
+            foreach ($required in @("MotionSFX.exe", "MotionSFX.Updater.exe", "app-version.json", "Assets/MotionSFX-logo.png", "Assets/MotionSFX-icon.ico")) {
+              if ($names -notcontains $required) { throw "Runtime ZIP is missing $required" }
+            }
+          } finally { $archive.Dispose() }
+          Write-Host "Built and validated $package"
+          "MOTIONSFX_RUNTIME_PACKAGE=$package" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Attach the verified runtime package to the draft release
+        env:
+          GH_TOKEN: \${{ github.token }}
+          GH_REPO: \${{ github.repository }}
+          RELEASE_TAG: \${{ inputs.release_tag }}
+        shell: pwsh
+        run: |
+          gh release upload $env:RELEASE_TAG "$env:MOTIONSFX_RUNTIME_PACKAGE" --repo $env:GH_REPO --clobber
+          if ($LASTEXITCODE -ne 0) { throw "Uploading the runtime package failed." }
+          Write-Host "Runtime package attached. Review the draft release assets before publishing."
