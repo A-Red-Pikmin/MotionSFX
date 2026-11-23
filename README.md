@@ -4,7 +4,7 @@
     </picture>
   
 # MotionSFX
-MotionSFX is a C# Vibecoded project that translates SlimeVR FBT movement into a native Windows keybind set.
+MotionSFX is a C# Vibecoded project that translates SlimeVR FBT movement into a native Windows keybind.
 This program requires the .NET 10 SDK for Windows and currently does not support Linux.
 
 ## Build
