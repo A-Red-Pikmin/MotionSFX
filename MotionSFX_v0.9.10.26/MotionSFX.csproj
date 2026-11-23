@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AssemblyName>MotionSFX</AssemblyName>
+    <RootNamespace>MotionSFX</RootNamespace>
+    <ApplicationIcon>Assets\MotionSFX-icon.ico</ApplicationIcon>
+    <Version>0.9.10.26</Version>
+    <FileVersion>0.9.10.26</FileVersion>
+    <AssemblyVersion>0.9.10.26</AssemblyVersion>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The shortcut utility is a separate build-time console project, not part of MotionSFX.exe. -->
+    <Compile Remove="BuildTools\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Managed Valve OpenVR bindings plus the matching x64 native runtime bridge. -->
+    <PackageReference Include="JeppDev.OpenVR" Version="2.15.6" />
+    <!-- Persistent GPU texture updates avoid OpenVR's image-loading path on every dashboard refresh. -->
+    <PackageReference Include="Vortice.Direct3D11" Version="3.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\MotionSFX-logo.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\MotionSFX-icon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Config\settings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Config\presets.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Config\tracker-roles.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="THIRD_PARTY_NOTICES.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
