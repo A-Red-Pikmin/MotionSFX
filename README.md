@@ -21,9 +21,11 @@ The build is self-contained and single-file for `win-x64`. The executable contai
 
 ## SlimeVR configuration
 
-Open SlimeVR and find settings. Scroll down to the OSC section and select VMC. Enable VMC.
+Open SlimeVR and find settings. Scroll down to the OSC section. Enable OSC Router and VMC.
 
-In SlimeVR's VMC settings, set the destination to `127.0.0.1` and Port Out to `39539`. Press **Start receiving** in MotionSFX.
+In SlimeVR's OSC Router settings, set the Port Input to `9002` and Port Out to `9000`. Set the network address to `127.0.0.1`.
+
+In SlimeVR's VMC settings, set the destination to `127.0.0.1` and Port Out to `39539`.
 
 
 Logs are written to:
