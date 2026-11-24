@@ -1,0 +1,72 @@
+[
+  {
+    "id": "right-foot",
+    "name": "Right Foot Step",
+    "description": "Keybind for a right-foot step.",
+    "hotkey": "CTRL+ALT+1",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "RightFoot",
+    "cooldownMs": 0
+  },
+  {
+    "id": "left-foot",
+    "name": "Left Foot Step",
+    "description": "Keybind for a left-foot step.",
+    "hotkey": "CTRL+ALT+2",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "LeftFoot",
+    "cooldownMs": 0
+  },
+  {
+    "id": "right-arm",
+    "name": "Right Arm Move",
+    "description": "Keybind for right-arm movement.",
+    "hotkey": "CTRL+ALT+3",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "RightHand",
+    "cooldownMs": 0
+  },
+  {
+    "id": "left-arm",
+    "name": "Left Arm Move",
+    "description": "Keybind for left-arm movement.",
+    "hotkey": "CTRL+ALT+4",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "LeftHand",
+    "cooldownMs": 0
+  },
+  {
+    "id": "head",
+    "name": "Head Movement",
+    "description": "Keybind for head movement.",
+    "hotkey": "CTRL+ALT+5",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "Head",
+    "cooldownMs": 0
+  },
+  {
+    "id": "chest",
+    "name": "Chest Movement",
+    "description": "Keybind for chest movement.",
+    "hotkey": "CTRL+ALT+6",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "Chest",
+    "cooldownMs": 0
+  },
+  {
+    "id": "hip",
+    "name": "Hip Movement",
+    "description": "Keybind for hip movement.",
+    "hotkey": "CTRL+ALT+7",
+    "enabled": false,
+    "sensitivity": "Normal",
+    "targetRole": "Hip",
+    "cooldownMs": 0
+  }
+]

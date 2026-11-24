@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Core\MovementTriggerCoordinator.cs" Link="Core\MovementTriggerCoordinator.cs" />
+    <Compile Include="..\Core\MovementMath.cs" Link="Core\MovementMath.cs" />
+    <Compile Include="..\Core\VmcReceiver.cs" Link="Core\VmcReceiver.cs" />
+    <Compile Include="..\Core\Models.cs" Link="Core\Models.cs" />
+    <Content Include="..\Config\settings.json" Link="Config\settings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Config\presets.json" Link="Config\presets.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\MainWindow.xaml.cs" Link="Source\MainWindow.xaml.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\UI\MainWindow.xaml" Link="Source\MainWindow.xaml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Core\VmcReceiver.cs" Link="Source\VmcReceiver.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\MotionSFX.csproj" Link="Source\MotionSFX.csproj" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="ReportSuccessfulCompilationUnits" AfterTargets="CoreCompile" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Message Importance="high" Text="    [COMPILED] %(Compile.Identity)" />
+  </Target>
+</Project>

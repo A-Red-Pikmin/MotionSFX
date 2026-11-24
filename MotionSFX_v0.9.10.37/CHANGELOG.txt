@@ -1,0 +1,287 @@
+0.9.10.37 - Remove neutral re-arming and improve all-preset transform alignment
+- Removed movement hysteresis, neutral-position detection, and the 150 ms stabilization requirement. Each qualifying movement attempt immediately captures a new baseline after send, failure, or timing block, restoring the earlier behavior.
+- Preserved independent per-preset cooldowns and the optional global activation delay. Only successful automatic sends update their timestamps; blocked movement is not queued.
+- Restored the original 75 ms target/reference synchronization window and added time-aligned reference interpolation (linear position + quaternion SLERP) to reduce stale reference poses for Head/Chest and all other paired presets.
+- Retained GLOBAL and LOCAL transform streams independently. Every preset prefers a complete GLOBAL target/reference pair and falls back to a complete LOCAL pair; incompatible GLOBAL-target/LOCAL-reference combinations are never measured.
+- Centralized the tracker-category role mapping and Euclidean position/quaternion-angle measurements for all seven presets. HMD maps to Head, CON maps to Left/Right Hand, and TRA maps to feet, legs, Hip, and Chest.
+- Clarified that VMC /Pos reports avatar-scale coordinates and /Pos/Local reports device-raw coordinates; the live position readout labels the active source and does not imply physical metres.
+- Added tests for 75 ms pairing tolerance, reference interpolation, all seven preset position/rotation paths, both coordinate-space selection paths, rejection of mixed spaces, and all supported tracker-category role mappings.
+- Preserved cooldown configuration, tracker assignments, keybinds, SteamVR dashboard integration, graph histories, and desktop layout.
+
+0.9.10.36 - Clean compiler warnings and expand build compilation reporting
+- Changed mutable VMC data and WPF control-reference fields in Models.cs to auto-properties. This preserves their read/write behavior while removing CS0649 warnings for fields populated by packet updates or UI initialization methods.
+- Updated the IDXGI resource QueryInterface call to pass the GUID with the `in` modifier, removing CS9191.
+- Added post-compilation reporting targets to the movement-test project, main application, and optional shortcut utility. Each successful C# compile now prints one `[COMPILED]` line per source file.
+- Updated BUILD_NATIVE.cmd with numbered stages, explicit success/failure messages, detailed MSBuild verbosity, and plain console logging instead of the compact progress display.
+- Kept the application UI, movement logic, DXGI shared-texture integration, dashboard, configuration, and shortcut prompt behavior unchanged.
+
+0.9.10.35 - Updated application subtitle and window controls
+- Changed the subtitle beneath the MotionSFX title to "Native FBT Movement-to-Keybind Application.".
+- Changed the WPF window ResizeMode to CanMinimize so the window can be minimized while remaining non-resizable.
+- Kept the fixed desktop window size at 1280x800 and left all other layouts and behavior unchanged.
+
+0.9.10.34 - Reduce desktop window height to 1280x800
+- Changed the fixed desktop window size from 1280x860 to 1280x800.
+- Kept the 1280-pixel width, ResizeMode=NoResize, preset graph sizing, and all other behavior unchanged.
+
+0.9.10.33 - Larger graphs on individual Movement Preset pages
+- Enlarged the live movement graph shown on each of the seven individual preset pages by 20% using a preset-only LayoutTransform.
+- Widened the preset graph column from 360 to 450 pixels so the enlarged graph fits beside the existing controls.
+- Left the shared graph template, desktop Live View tab, SteamVR dashboard graphs, graph history, movement logic, and preset controls unchanged.
+
+0.9.10.32 - Optional desktop shortcut and 1280x860 window
+- Changed the fixed desktop window size from 1280x900 to 1280x860.
+- BUILD_NATIVE.cmd now asks whether to create or update MotionSFX.lnk after a successful publish; choosing No skips shortcut creation.
+- The application still launches automatically after a successful build, regardless of the shortcut choice.
+- No preset layout, movement logic, SteamVR dashboard behavior, or configuration was changed.
+
+0.9.10.31 - Reduce desktop window height for clipping test
+- Reduced the fixed desktop window from 1280x1000 to 1280x900.
+- Kept the window width at 1280 and retained ResizeMode=NoResize.
+- No preset layout, control placement, movement logic, dashboard behavior, or configuration was changed.
+
+0.9.10.31 - Increase desktop window height for clipping test
+- Increased the fixed desktop window from 1280x720 to 1280x1000.
+- Kept the window width at 1280 and retained ResizeMode=NoResize.
+- No preset layout, control placement, movement logic, dashboard behavior, or configuration was intentionally changed.
+
+0.9.10.29 - Fix duplicate WPF MainWindow XAML compilation
+- Disabled the WPF SDK's recursive default Page glob and explicitly included only
+  UI\MainWindow.xaml. The pre-build test project copies a source XAML file into
+  Tests\bin; the default recursive WPF Page glob could discover that copied file
+  and generate the MainWindow partial class a second time.
+- Added a regression test that verifies the application has one explicit WPF Page.
+- Cleaned the application's root obj/bin/publish outputs before publishing so stale
+  generated WPF artifacts cannot contaminate a new build.
+- No movement trigger, cooldown, dashboard, tracker, or configuration behavior changed.
+
+0.9.10.28 - Fix missing System.IO imports in movement test harness
+- Added an explicit using System.IO directive to Tests/Program.cs so the Path and File APIs resolve reliably when the pre-publish test project is compiled.
+- No movement detection, cooldown, re-arming, dashboard, configuration, or UI behavior changed.
+
+0.9.10.27 - Independent preset cooldowns, global delay, and movement re-arming
+- Added independent 0-10000 ms cooldowns for all seven movement presets. Cooldown
+  timestamps begin only after a successful automatic shortcut send; manual tests,
+  failed sends, disabled presets, and delay-blocked movements do not start them.
+- Retained the optional 0-10000 ms global activation delay as a separate limit
+  between any two successful automatic shortcuts. Existing saved values are kept;
+  the shipped default for new installations is now 0 (disabled).
+- Added per-preset movement hysteresis: a qualifying trigger attempt latches its
+  movement cycle, including attempts blocked by either timer. No blocked movement
+  is queued for later execution.
+- A latched preset re-arms only after position AND rotation fall below 50% of
+  their activation thresholds and remain neutral for 150 ms. The original anchor
+  is held while latched and updated only after the neutral stabilization completes.
+- Cooldown and neutral-stabilization elapsed times use monotonic Stopwatch ticks.
+  Tracker/role/baseline resets clear arming state without erasing cooldown times.
+- Added actual runtime timing and re-arm state to preset previews, desktop Live View,
+  and SteamVR Live Graphs; all displays share the existing graph view-model history.
+- Added a dependency-free state-machine/configuration test harness. BUILD_NATIVE.cmd
+  runs the tests before publishing; a failed test stops the build.
+- Preserved existing Euclidean position distance, quaternion rotation, tracker
+  reference relationships, sensitivity thresholds, and large-transform outlier guard.
+- Updated application, assembly, UI, SteamVR dashboard, build, README, and changelog
+  version labels to 0.9.10.27.
+
+0.9.10.26 - Restore desktop Live View and simplify SteamVR Overview
+- Restored the desktop Live View main tab with all seven movement graphs in a three-column scrollable layout.
+- Bound the desktop Live View graph hosts to the same MovementPreviewViewModel instances used by the individual Movement Presets pages and SteamVR dashboard; no duplicate graph history or detector was added.
+- Removed the Tracker Snapshot subsection from the bottom of the SteamVR dashboard Overview page while retaining the receiver metrics, VMC reception panel, and the dedicated Trackers page.
+- Preserved the DXGI shared-handle SteamVR texture integration from 0.9.10.25, including the dashboard pages, rendering cadence, and pointer input.
+- Preserved the 1280x720 desktop window and 1.9-metre SteamVR dashboard width.
+- Updated application, assembly, build, desktop UI, SteamVR dashboard, and documentation version labels to 0.9.10.26.
+
+0.9.10.25 - Replace ordinary Direct3D overlay texture with DXGI shared handle
+- Create the persistent OpenVR display texture with D3D11_RESOURCE_MISC_SHARED.
+- Retrieve the resource's legacy IDXGIResource shared HANDLE and submit it as
+  TextureType_DXGISharedHandle (enum value 5), passing the HANDLE value itself.
+- Keep the existing dynamic upload texture, CopyResource update path, dashboard
+  pages, pointer events, and 20 FPS dirty-render throttle.
+- Retain the shared texture and handle for the dashboard overlay lifetime; release
+  the texture only after destroying the OpenVR overlay.
+- Updated application, assembly, build, dashboard, desktop UI, and documentation
+  version labels to 0.9.10.25.
+
+0.9.10.24 - Improve SteamVR dashboard refresh responsiveness
+- Increased the active dashboard render cadence from once per second to up to 20 FPS, matching the existing 50 ms UI pump.
+- Kept one stable DEFAULT Direct3D 11 texture attached to OpenVR; no longer re-submits/re-imports the same texture on every dashboard render.
+- Replaced the CPU-mapped STAGING upload texture with a DYNAMIC upload texture mapped using WRITE_DISCARD, then copied into the stable OpenVR display texture.
+- Optimized Pbgra32-to-RGBA conversion for the dashboard's opaque background to avoid unnecessary per-channel un-premultiplication on opaque pixels.
+- Preserved dashboard pages, graph data, pointer hit testing, 1.9-metre panel width, 1000x760 canvas, 1280x720 desktop window, and existing receiver/movement behavior.
+- Updated application, assembly, build, dashboard, desktop UI, and documentation version labels to 0.9.10.24.
+
+0.9.10.23 - Restore SteamVR dashboard texture refresh and pointer clicks
+- Resubmit the same persistent Direct3D 11 texture through OpenVR SetOverlayTexture after each rendered update, instead of attaching it only once.
+- Use a CPU-writable staging texture and copy into a stable DEFAULT display texture to avoid WRITE_DISCARD resource renaming on the texture held by OpenVR.
+- Handle dashboard clicks on mouse-button release using coordinates carried by the button event itself; no prior MouseMove event is required.
+- Preserve the existing four dashboard pages, 1.9-metre panel width, 1280x720 desktop window, VMC processing, and movement behavior.
+- Updated application, assembly, build, and documentation version labels to 0.9.10.23.
+
+0.9.10.22 - Fix Direct3D 11 MapFlags compile ambiguity
+- Qualified the texture mapping flag as Vortice.Direct3D11.MapFlags.None to resolve CS0104 between the DXGI and Direct3D 11 namespaces.
+- No dashboard rendering behavior, layout, graph logic, tracker handling, or movement behavior changed from 0.9.10.21.
+- Updated application, assembly, build script, desktop UI, and documentation version labels to 0.9.10.23.
+
+0.9.10.21 - Replace repeated dashboard image uploads with a persistent Direct3D 11 texture
+- Replaced per-render OpenVR SetOverlayRaw calls with a persistent D3D11 texture attached through SetOverlayTexture.
+- The texture is attached to the main SteamVR dashboard overlay once, then its pixels are updated in-place using D3D11 Map/Unmap; page changes and live graph refreshes no longer submit a new raw image to OpenVR.
+- Kept the existing 1000x760 dashboard renderer, 1.9-metre physical width, four dashboard pages, pointer input, and one-second maximum refresh cadence.
+- D3D11 device, context, and texture are released after the OpenVR overlay handles are destroyed, including runtime disconnect and application shutdown.
+- Added Vortice.Direct3D11 3.8.3 for Direct3D 11 texture creation and updates; no VMC receiver, tracker assignment, movement detection, sensitivity, or keybind behavior changed.
+- Updated the application title, assembly metadata, build script, desktop UI, SteamVR dashboard and documentation version labels to 0.9.10.21.
+
+0.9.10.20 - Move combined live graphs into the SteamVR dashboard
+- Removed the combined Live View tab from the desktop application; the desktop returns to its four main tabs.
+- Added a fourth SteamVR dashboard page named Live Graphs, displaying all seven movement graphs.
+- The dashboard reads copied snapshots of the existing movement preview histories, thresholds and status text; it does not add another receiver or movement detector.
+- Kept the existing per-preset graphs on the desktop Movement Presets tab.
+- Preserved the 1280x720 desktop window, 1.9-metre SteamVR dashboard width, 1000x760 render canvas and SetOverlayRaw in-memory texture updates.
+- Updated the application title, assembly metadata, build script, desktop UI, SteamVR dashboard and documentation version labels to 0.9.10.20.
+
+0.9.10.19 - Correct SteamVR dashboard panel sizing
+- Increased the SteamVR dashboard's physical overlay width from 1.75 to 1.9 metres using SetOverlayWidthInMeters.
+- Restored the desktop WPF window to its original fixed 1280x720 dimensions.
+- Preserved the 1000x760 dashboard render canvas, existing dashboard layout and pointer coordinate mapping.
+- Retained the SetOverlayRaw in-memory dashboard texture update introduced in v0.9.10.18.
+- Retained the Live View tab added in v0.9.10.18, as previously requested.
+- No VMC receiver, tracker assignment, movement detection, sensitivity, or keybind logic changed.
+- Updated the application, assembly, build, desktop UI, SteamVR dashboard, and documentation version labels to 0.9.10.19.
+
+0.9.10.18 - SteamVR dashboard rendering and combined live graph view
+- Replaced repeated temporary-PNG dashboard updates through SetOverlayFromFile with in-memory RGBA updates through OpenVR SetOverlayRaw, keeping the existing dashboard overlay handle in place.
+- Removed per-frame PNG file creation, retention, and cleanup from the SteamVR dashboard renderer.
+- Preserved the existing dashboard refresh timing and immediate action feedback while changing the texture update path.
+- Added a Live View tab containing all seven movement graphs, reusing the exact view-model instances and detector-backed histories already shown on each preset page.
+- Increased the fixed desktop window size from 1280x720 to 1380x840 to provide additional space for the new tab and reduce clipping.
+- Updated the application, assembly, build, desktop UI, SteamVR dashboard, and documentation version labels to 0.9.10.18.
+
+0.9.10.17 - Place Test keybind beside Enable movement trigger
+- Moved each preset's Test keybind button to the right of its Enable movement trigger checkbox.
+- Kept both controls vertically centered in the same row, reducing the vertical space used by the controls.
+- Prevents the Test keybind button from extending below the preset content when Custom sensitivity controls are visible.
+- No movement detection, tracker assignment, sensitivity, or keybind behavior changed.
+
+0.9.10.16 - Preserve tracker role editor selection during live refresh
+- Preserve the selected tracker row and role-editor choice while refreshing the live VMC tracker list.
+- Ignore transient DataGrid selection changes caused by replacing the row collection.
+- Keep the role ComboBox items intact unless the selected tracker's available role options actually change.
+- Preserve an in-progress role choice so periodic tracker updates do not reset it to Unassigned.
+
+0.9.10.10 - Movement preview and preset-page UI refinements
+- Moved each preset Test keybind button below its Enable movement trigger checkbox.
+- Enforced bold text on all buttons.
+- Removed the duplicate outer preview frame so each graph has one outline.
+- Added separate position (units) and rotation (degrees) axes labeled from each preset's actual active sensitivity thresholds, including Custom thresholds.
+- Reworked graph spacing and labels to prevent clipping in the right-side preview panel.
+
+0.9.10.10 - XAML build correction
+- Removed a duplicate namespace-qualified Grid.Row assignment on the Movement Presets tab control. This fixes the MC3024 XAML compiler error without changing layout behavior.
+
+0.9.10.10 - Live Movement Sensitivity Preview
+- Added a live preview for all seven movement presets using the existing movement detector's position-distance and quaternion-angle measurements.
+- Position (units) and rotation (degrees) are displayed separately against the exact active preset thresholds; either metric reaching its threshold matches the detector's existing trigger condition.
+- Added distinct preview states for stale or unavailable tracker data, missing/ambiguous target and reference roles, calibration, disabled presets, disarmed reception, outlier jump rejection, global activation-delay blocking, shortcut failures, and successful shortcut sends.
+- Preview calculations reuse the existing tracker assignment, relative-transform, freshness, distance, quaternion-angle and threshold logic. Enabled presets use the actual detector anchors; disabled/failed presets use preview-only anchors so their monitoring cannot change the retained trigger anchors.
+- No second UDP receiver, worker thread, preset cooldown, or independent shortcut/trigger path was added.
+- Preview UI refreshes at the existing 4 Hz status refresh cadence.
+
+0.9.10.7 - Tab borders and main header emphasis
+- Increased the border thickness on all main and nested tabs from 1 to 1.5 device-independent pixels.
+- Strengthened the main MotionSFX header title from Bold to ExtraBold.
+- Updated application, assembly, build, desktop UI, SteamVR dashboard, and documentation version labels.
+- No movement detection, sensitivity, keybind, or SteamVR registration behavior changed.
+
+0.9.10.6 - Post-build countdown
+- After a successful build, MotionSFX launches automatically as before.
+- BUILD_NATIVE.cmd now displays a visible 5-to-1 countdown and closes automatically.
+- Build and setup errors still pause so their messages remain visible.
+
+0.9.10.5 - Purple native Windows title bar
+- Applied a dark-purple caption color to the native Windows title bar.
+- Set the caption text to white while retaining the standard Windows frame border.
+- Kept the standard Windows title-bar controls and window behavior unchanged.
+- Uses DWM caption-color attributes on Windows 11 build 22000 and newer; unsupported systems keep their normal title bar.
+- Title-bar styling failures are logged as warnings and do not prevent the application from starting.
+
+0.9.10.4 - Custom label and post-build launch
+- Renamed the Custom sensitivity option and its panel heading from "Custom thresholds" to "Custom".
+- BUILD_NATIVE.cmd now launches MotionSFX automatically after a successful build and desktop shortcut creation.
+- Existing sensitivity values, SteamVR dashboard behavior, and VMC processing are unchanged.
+
+0.9.10.3 - Custom movement sensitivity
+- Added a fourth sensitivity option, Custom, to each of the seven movement presets.
+- Custom position and rotation thresholds are independently configurable per preset and saved in the user presets JSON.
+- Existing High, Normal, and Low threshold values are unchanged.
+- Custom position range: 0.001 to 2.0 units; custom rotation range: 0.1 to 180 degrees.
+- Existing preset files migrate automatically with default custom values of 0.15 units and 10 degrees.
+
+0.9.10.2 - SteamVR registration build correction
+- Added the explicit System.IO namespace import used by SteamVR application registration.
+- Fixes the missing Path, File, Directory, and FileNotFoundException compile errors.
+
+MotionSFX Alpha v0.9.10.2
+- Added persistent SteamVR application-manifest registration for the existing MotionSFX dashboard.
+- Enabled SteamVR's dashboard auto-launch flag so MotionSFX can start with the SteamVR runtime.
+- Stored the manifest under %APPDATA%\MotionSFX\SteamVR and refreshes the registered executable path if MotionSFX is moved.
+- Registration failures are logged without disabling the existing desktop app or in-session dashboard.
+
+MotionSFX Alpha v0.9.10.1
+- Fixed SteamVR controller clicks by converting OpenVR bottom-left mouse coordinates to the WPF dashboard's top-left coordinate space.
+- Dashboard controls now activate on trigger-down, with a release-event fallback.
+- Increased SteamVR dashboard width from 1.28 m to 1.75 m without changing the dashboard design or canvas layout.
+- Repositioned the version label below the dashboard subtitle to prevent overlap with the connection status badge.
+
+0.9.10.0 - Native SteamVR Dashboard integration
+- Added a real OpenVR Dashboard tab named MotionSFX.
+- Uses the supplied MotionSFX-logo.png as the Dashboard thumbnail and in the dashboard header.
+- Added Overview, Trackers, and Presets pages with controller-pointer click interaction.
+- Added dashboard controls for starting/stopping the existing VMC receiver and toggling the seven existing movement presets.
+- Dashboard reads the existing application state; it does not create a second UDP/VMC receiver or duplicate movement processing.
+- Overlay events are polled from the existing 20 Hz UI timer. Dashboard images are rendered only while the MotionSFX tab is active and are rate-limited to one update per second.
+- Added Valve OpenVR C# bindings and matching native runtime bridge through the JeppDev.OpenVR 2.15.6 NuGet package.
+- Matched the seven preset hit targets to the rendered dashboard buttons and isolated temporary dashboard frames per process.
+- Matched controller mouse handling to Valve's sample by using the last mouse-move position for button events.
+- Explicitly releases both dashboard and thumbnail handles on shutdown.
+- Added Valve OpenVR third-party redistribution notice to source package and published output.
+
+0.9.9.1 - Updated branding
+- Replaced the in-app logo with the supplied M/SFX PNG artwork.
+- Replaced the Windows executable and desktop shortcut icon with the supplied ICO artwork.
+- No application logic or performance behavior changed.
+
+0.9.9.1 - Version update
+- Updated application, assembly, file, build, and documentation version labels to 0.9.9.1.
+- No functional changes from 0.9.9.0.
+
+MotionSFX Alpha 0.9.9.1
+=======================
+
+FULL NATIVE REWRITE
+- Replaced the PowerShell runtime and 82 KB PowerShell application script
+  with a C# WPF application.
+- Removed the PowerShell launcher, child process, PowerShell host, Add-Type
+  compilation, and PowerShell keyboard module from the runtime path.
+- Moved configuration, persistence, UI event handling, tracker state,
+  movement recognition, logging and keyboard injection into native C#.
+- Retained the C# VMC/OSC receiver as a dedicated, below-normal-priority
+  background worker.
+
+PERFORMANCE
+- Bounded motion queue at 8,192 samples.
+- Per-transform motion sample throttling at about 30 Hz.
+- UI poll at 50 ms; status refresh at 250 ms; data tables at 1 second only
+  while visible.
+- Motion backlog capped to the newest 150 samples per UI tick.
+- Cached SteamVR process detection (10-second interval).
+- Bounded log buffer.
+
+DEPLOYMENT
+- .NET 10 LTS WPF application.
+- Self-contained single-file win-x64 publish output.
+- No PowerShell scripts or PowerShell runtime required.
+
+
+0.9.9.0 - Desktop shortcut build fix
+- BUILD_NATIVE.cmd now creates or updates MotionSFX.lnk on the current Windows user Desktop after a successful publish.
+- Shortcut points directly to publish\MotionSFX.exe and uses the executable icon and publish folder as its working directory.
+- Shortcut creation uses a small C# build-time helper and native Windows Shell Link COM APIs; no PowerShell is used.
