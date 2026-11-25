@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Core\MovementTriggerCoordinator.cs" Link="Core\MovementTriggerCoordinator.cs" />
+    <Compile Include="..\Core\MovementMath.cs" Link="Core\MovementMath.cs" />
+    <Compile Include="..\Core\VmcReceiver.cs" Link="Core\VmcReceiver.cs" />
+    <Compile Include="..\Core\Models.cs" Link="Core\Models.cs" />
+    <Compile Include="..\Core\PerformanceMonitor.cs" Link="Core\PerformanceMonitor.cs" />
+    <Compile Include="..\Core\PhysicalHipTrackerDetector.cs" Link="Core\PhysicalHipTrackerDetector.cs" />
+    <Content Include="..\..\Config\settings.json" Link="Config\settings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\Config\presets.json" Link="Config\presets.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\MainWindow.xaml.cs" Link="Source\MainWindow.xaml.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\App.xaml.cs" Link="Source\App.xaml.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Core\PhysicalHipTrackerDetector.cs" Link="Source\PhysicalHipTrackerDetector.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Core\SlimeVrTrackerFeedClient.cs" Link="Source\SlimeVrTrackerFeedClient.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\UI\MainWindow.xaml" Link="Source\MainWindow.xaml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Core\VmcReceiver.cs" Link="Source\VmcReceiver.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Core\SteamVrDashboard.cs" Link="Source\SteamVrDashboard.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\MotionSFX.csproj" Link="Source\MotionSFX.csproj" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The build script starts in the application root and is moved to BuildTools after a successful build. -->
+    <Content Include="..\..\BUILD_NATIVE.cmd" Link="Source\BUILD_NATIVE.cmd" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\..\BUILD_NATIVE.cmd')" />
+    <Content Include="..\..\BuildTools\BUILD_NATIVE.cmd" Link="Source\BUILD_NATIVE.cmd" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\..\BuildTools\BUILD_NATIVE.cmd') and !Exists('..\..\BUILD_NATIVE.cmd')" />
+    <Content Include="..\..\BuildTools\RUN_NATIVE.cmd" Link="Source\RUN_NATIVE.cmd" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="MovementTriggerStateMachine.Tests.csproj" Link="Source\Tests\MovementTriggerStateMachine.Tests.csproj" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Program.cs" Link="Source\Tests\Program.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\BuildTools\ShortcutCreator\ShortcutCreator.csproj" Link="Source\BuildTools\ShortcutCreator\ShortcutCreator.csproj" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="ReportSuccessfulCompilationUnits" AfterTargets="CoreCompile" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Message Importance="high" Text="$(MOTIONSFX_ANSI_CYAN)    [COMPILED] %(Compile.Identity)$(MOTIONSFX_ANSI_RESET)" />
+  </Target>
+</Project>

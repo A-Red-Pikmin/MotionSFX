@@ -1,0 +1,86 @@
+THIRD-PARTY NOTICES
+===================
+
+OpenVR SDK and native runtime library
+-------------------------------------
+This application uses the OpenVR API and includes the OpenVR native runtime
+library (openvr_api.dll) distributed by Valve Corporation. The C# bindings
+are generated from Valve's OpenVR API. The matching binary is distributed
+through the community-maintained JeppDev.OpenVR NuGet packages.
+
+Copyright (c) 2015, Valve Corporation
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+Project: https://github.com/ValveSoftware/openvr
+
+JeppDev.OpenVR package
+----------------------
+The JeppDev.OpenVR NuGet package is a third-party, community-maintained
+packaging of the managed bindings and native OpenVR binaries. It is not
+maintained or endorsed by Valve. Package details and its applicable license
+are available at: https://www.nuget.org/packages/JeppDev.OpenVR/
+
+
+Vortice.Windows - Direct3D 11 bindings
+--------------------------------------
+This application uses Vortice.Direct3D11 3.8.3 to create and update a persistent
+Direct3D 11 texture for the SteamVR dashboard. Vortice.Windows is licensed under
+the MIT License. Project: https://github.com/amerkoleci/Vortice.Windows
+Package: https://www.nuget.org/packages/Vortice.Direct3D11/3.8.3
+
+MIT License
+
+Copyright (c) Amer Koleci and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+Google.FlatBuffers 25.2.10
+-------------------------
+This application uses Google.FlatBuffers to serialize and read SlimeVR's local
+SolarXR tracker status feed. Google.FlatBuffers is distributed under the
+Apache License, Version 2.0. License text: https://www.apache.org/licenses/LICENSE-2.0
+Project: https://github.com/google/flatbuffers
+Package: https://www.nuget.org/packages/Google.FlatBuffers/25.2.10
