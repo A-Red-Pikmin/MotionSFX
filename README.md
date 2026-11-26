@@ -30,7 +30,7 @@ In SlimeVR's VMC settings, set the destination to `127.0.0.1` and Port Out to `3
 
 Logs are written to:
 
-`%APPDATA%\MotionSFX\motionsfx.log`
+`%APPDATA%\MotionSFX\Logs`
 
 If the receiver reports no traffic, verify SlimeVR's destination IP and Port Out. A VMC identity count is not a physical IMU count: SlimeVR's VMC output contains computed tracker transforms, not a physical sensor inventory.
 
