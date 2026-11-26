@@ -12,8 +12,8 @@ This program requires the .NET 10 SDK for Windows and currently does not support
 1. Install the [.NET 10 SDK for Windows x64](https://dotnet.microsoft.com/download/dotnet/10.0).
 2. Install the latest build of MotionSFX from the releases tab.
 3. Run `BUILD_NATIVE.cmd`.
-4. The finished standalone executable is `publish\MotionSFX.exe`.
-5. Run `publish\MotionSFX.exe` (or use `RUN_NATIVE.cmd`).
+4. The finished standalone executable is `MotionSFX.exe`.
+5. Run `MotionSFX.exe` (or use `RUN_NATIVE.cmd`).
 
 The build is self-contained and single-file for `win-x64`. The executable contains the .NET runtime, so the target PC does not need a separate .NET Desktop Runtime installed. The small `Assets` and `Config` folders are copied next to the executable because they contain the supplied app logo/icon and default configuration templates. User settings and presets are stored separately in:
 
